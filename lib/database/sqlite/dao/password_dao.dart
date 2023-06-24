@@ -35,9 +35,9 @@ class PasswordDao extends GenericDao<Password, int> {
   Future<Password> save(Password data) async {
     Database db = await Connection.create();
     String sql;
-    sql = 'INSERT INTO password (password) VALUES (?)';
-    int id = await db.rawInsert(sql, [data.password]);
-    data = Password(id: id, password: data.password);
+    sql = 'INSERT INTO password (password, name) VALUES (?, ?)';
+    int id = await db.rawInsert(sql, [data.password, data.name]);
+    data = Password(id: id, password: data.password, name: data.name);
     return data;
   }
 

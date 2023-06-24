@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gerador_senhas/database/dto/password.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
+import 'package:gerador_senhas/util/util.dart';
 
 class CreatePassword extends StatefulWidget {
   const CreatePassword({super.key});
@@ -28,23 +29,9 @@ class _CreatePasswordState extends State<CreatePassword> {
       Password registerPassword;
 
       if (password.value.text != "") {
-        registerPassword = Password(password: password.value.text);
+        registerPassword = Password(password: password.value.text, name: passwordName.value.text);
       } else {
-        String upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        String lower = 'abcdefghijklmnopqrstuvwxyz';
-        String numbers = '1234567890';
-        String symbols = '!@#\$%^&*()<>,./';
-        int passLength = int.parse(passwordLength.value.text);
-        String seed = upper + lower + numbers + symbols;
-        String password = '';
-        List<String> list = seed.split('').toList();
-        Random rand = Random();
-
-        for (int i = 0; i < passLength; i++) {
-          int index = rand.nextInt(list.length);
-          password += list[index];
-        }
-        registerPassword = Password(password: password);
+        registerPassword = Password(password: Util.generatePassword(passwordLength.value.text), name: passwordName.value.text);
       }
       passwordDao.save(registerPassword);
       return registerPassword.password;
@@ -62,10 +49,8 @@ class _CreatePasswordState extends State<CreatePassword> {
         child: Column(
           children: [
             const Spacer(),
-            const Text("What do you want?"),
-            const Spacer(),
             Flexible(
-              flex: 4,
+              flex: 2,
               child: DropdownButtonFormField(
                 validator: (value) {
                   if(value == null || value.isEmpty) {
@@ -89,64 +74,65 @@ class _CreatePasswordState extends State<CreatePassword> {
                 }).toList(),
               ),
             ),
-            const Spacer(),
-            Flexible(
-              flex: 5,
-              child: TextFormField(
-                controller: passwordName,
-                validator: (value) {
-                  if(value == null || value.isEmpty) {
-                    return "Insert a name to the password";
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Name the password"),
-              ),
-            ),
-            if (dropdownValue == "Enter an existing password") ...[
+            if(dropdownValue != null) ... [
               const Spacer(),
               Flexible(
                 flex: 5,
                 child: TextFormField(
-                  controller: password,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), labelText: "Password"),
-                ),
-              ),
-            ],
-            if (dropdownValue == "Create new password") ...[
-              const Spacer(),
-              Flexible(
-                flex: 5,
-                child: TextFormField(
-                  controller: passwordLength,
-                  keyboardType: TextInputType.number,
+                  controller: passwordName,
                   validator: (value) {
                     if(value == null || value.isEmpty) {
-                      return "Insert a password length";
-                    }
-                    if(int.parse(value) < 8) {
-                      return "Your password is too short!";
+                      return "Insert a name to the password";
                     }
                     return null;
                   },
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: "Password length"),
+                      labelText: "Name the password"),
                 ),
               ),
-            ],
-            const Spacer(),
-            FilledButton(
-                onPressed: () {
-                  String? password = _next();
+              if (dropdownValue == "Enter an existing password") ...[
+                const Spacer(),
+                Flexible(
+                  flex: 5,
+                  child: TextFormField(
+                    controller: password,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(), labelText: "Password"),
+                  ),
+                ),
+              ],
+              if (dropdownValue == "Create new password") ...[
+                const Spacer(),
+                Flexible(
+                  flex: 5,
+                  child: TextFormField(
+                    controller: passwordLength,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if(value == null || value.isEmpty) {
+                        return "Insert a password length";
+                      }
+                      if(int.parse(value) < 8) {
+                        return "Your password is too short!";
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Password length"),
+                  ),
+                ),
+              ],
+              const Spacer(),
+              FilledButton(
+                  onPressed: () {
+                    String? password = _next();
 
-                  if(password != null) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
+                    if(password != null) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
                             title: const Text("Password registered!"),
                             content: Text("Your password is $password"),
                             actions: <Widget>[
@@ -161,9 +147,12 @@ class _CreatePasswordState extends State<CreatePassword> {
                               ),
                             ],
                           ));
-                  }
-                },
-                child: const Text("Register password")),
+                    }
+                  },
+                  child: const Text("Register password")),
+            ],
+            const Spacer(),
+
           ],
         ),
       ),

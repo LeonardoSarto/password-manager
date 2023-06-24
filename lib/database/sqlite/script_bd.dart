@@ -4,6 +4,7 @@ class ScriptBd {
    CREATE TABLE password(
     id INTEGER NOT NULL PRIMARY KEY,
     password VARCHAR(200) NOT NULL,
+    name VARCHAR(200) NOT NULL,
     created_in DATE,
     updated_in DATE
    )''';
