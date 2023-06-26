@@ -18,17 +18,16 @@ class _AuthCheckState extends State<AuthCheck> {
     final isLocalAuthAvailable = await auth.isBiometricAvailable();
     isLocalAuthFailed.value = false;
 
-    if(isLocalAuthAvailable) {
+    if (isLocalAuthAvailable) {
       final authenticated = await auth.authenticate();
 
-      if(!authenticated) {
+      if (!authenticated) {
         isLocalAuthFailed.value = true;
       } else {
-        if(!mounted) return;
+        if (!mounted) return;
         Navigator.of(context).pushReplacementNamed(Routes.home);
       }
     }
-
   }
 
   @override
@@ -40,23 +39,24 @@ class _AuthCheckState extends State<AuthCheck> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
       body: ValueListenableBuilder<bool>(
           valueListenable: isLocalAuthFailed,
           builder: (context, failed, _) {
             if (failed) {
-              return Center(
-                child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Tentar autenticar novamente")),
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/images/logo.jpeg"),
+                  ElevatedButton(
+                      child: const Text("Try again"),
+                    onPressed: () {
+                      checkLocalAuth();
+                    }),
+                ],
               );
             }
-            return const Center(
-              child: SizedBox(
-                width: 80,
-                height: 80,
-                child: CircularProgressIndicator(),
-              ),
+            return Center(
+              child: Image.asset("assets/images/logo.jpeg"),
             );
           }),
     );

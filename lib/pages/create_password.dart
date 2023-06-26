@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gerador_senhas/database/dto/password.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
 import 'package:gerador_senhas/util/util.dart';
@@ -29,9 +28,12 @@ class _CreatePasswordState extends State<CreatePassword> {
       Password registerPassword;
 
       if (password.value.text != "") {
-        registerPassword = Password(password: password.value.text, name: passwordName.value.text);
+        registerPassword = Password(
+            password: password.value.text, name: passwordName.value.text);
       } else {
-        registerPassword = Password(password: Util.generatePassword(passwordLength.value.text), name: passwordName.value.text);
+        registerPassword = Password(
+            password: Util.generatePassword(passwordLength.value.text),
+            name: passwordName.value.text);
       }
       passwordDao.save(registerPassword);
       return registerPassword.password;
@@ -53,7 +55,7 @@ class _CreatePasswordState extends State<CreatePassword> {
               flex: 2,
               child: DropdownButtonFormField(
                 validator: (value) {
-                  if(value == null || value.isEmpty) {
+                  if (value == null || value.isEmpty) {
                     return "Select what do you want";
                   }
                   return null;
@@ -74,14 +76,14 @@ class _CreatePasswordState extends State<CreatePassword> {
                 }).toList(),
               ),
             ),
-            if(dropdownValue != null) ... [
+            if (dropdownValue != null) ...[
               const Spacer(),
               Flexible(
                 flex: 5,
                 child: TextFormField(
                   controller: passwordName,
                   validator: (value) {
-                    if(value == null || value.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return "Insert a name to the password";
                     }
                     return null;
@@ -110,10 +112,10 @@ class _CreatePasswordState extends State<CreatePassword> {
                     controller: passwordLength,
                     keyboardType: TextInputType.number,
                     validator: (value) {
-                      if(value == null || value.isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return "Insert a password length";
                       }
-                      if(int.parse(value) < 8) {
+                      if (int.parse(value) < 8) {
                         return "Your password is too short!";
                       }
                       return null;
@@ -128,31 +130,21 @@ class _CreatePasswordState extends State<CreatePassword> {
               FilledButton(
                   onPressed: () {
                     String? password = _next();
-
-                    if(password != null) {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text("Password registered!"),
-                            content: Text("Your password is $password"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(context, 'Cancel'),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'OK'),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ));
+                    if (password != null) {
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Your password is $password"),
+                        action: SnackBarAction(
+                            label: "Copy",
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: password));
+                            }),
+                      ));
                     }
                   },
                   child: const Text("Register password")),
             ],
             const Spacer(),
-
           ],
         ),
       ),

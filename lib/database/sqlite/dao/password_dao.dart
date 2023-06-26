@@ -42,15 +42,15 @@ class PasswordDao extends GenericDao<Password, int> {
   }
 
   @override
-  Future<Password> update(Password data) async {
+  Future<int> update(Password data) async {
     try{
       if(data.id == null) {
         throw Exception("Not found");
       }
       Database db = await Connection.create();
-      var sql = 'UPDATE password SET password = ? WHERE id = ?';
-      await db.rawUpdate(sql, [data.password]);
-      return data;
+      var sql = 'UPDATE password SET password = ?, name = ? WHERE id = ?';
+      int id = await db.rawUpdate(sql, [data.password, data.name, data.id]);
+      return id;
     } catch(e) {
       rethrow;
     }

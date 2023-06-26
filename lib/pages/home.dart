@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gerador_senhas/database/dto/password.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
+import 'package:gerador_senhas/routes/routes.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,6 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   PasswordDao passwordDao = PasswordDao();
   Future<List<Password>>? _futurePasswordList;
+  bool showPassword = false;
 
   @override
   void initState() {
@@ -23,12 +25,35 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Password manager")),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(child: Image.asset("assets/images/logo.jpeg")),
+            const ListTile(title: Text("Settings"), trailing: Icon(Icons.settings)),
+            const Divider(),
+            const ListTile(title: Text("About"), trailing: Icon(Icons.arrow_forward)),
+            const Divider(),
+          ]
+        ),
+      ),
+      appBar: AppBar(
+        title: const Text("Password manager"),
+        actions: [
+          IconButton(
+              icon:
+                  Icon(showPassword ? Icons.visibility : Icons.visibility_off),
+              onPressed: () {
+                setState(() {
+                  showPassword = !showPassword;
+                });
+              }),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(30))),
         onPressed: () {
-          Navigator.pushNamed(context, "/create-password")
+          Navigator.pushNamed(context, Routes.createPassword)
               .then((value) async => setState(() {
                     _futurePasswordList = passwordDao.readAll();
                   }));
@@ -42,9 +67,9 @@ class _HomeState extends State<Home> {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             List<Password> passwordList = snapshot.data!;
-            return ReorderableListView.builder(
+            return ListView.separated(
+              separatorBuilder: (context, index) => const Divider(),
               physics: const NeverScrollableScrollPhysics(),
-              footer: const Divider(),
               itemCount: passwordList.length,
               itemBuilder: (BuildContext context, int index) {
                 return Dismissible(
@@ -57,45 +82,49 @@ class _HomeState extends State<Home> {
                         "Delete",
                         style: TextStyle(color: Colors.white),
                       )),
-                  key: Key('$index'),
+                  key: ValueKey<Password>(passwordList[index]),
                   onDismissed: (direction) {
                     setState(() {
                       passwordDao.delete(passwordList[index].id!);
+                      passwordList.removeAt(index);
                     });
                   },
                   child: ListTile(
                     title: Text("Name: ${passwordList[index].name}"),
-                    subtitle: Text("Password: ${passwordList[index].password}"),
+                    subtitle: Text(
+                        "Password: ${showPassword ? passwordList[index].password : ("*" * passwordList[index].password.length)}"),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           icon: const Icon(Icons.edit),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, Routes.editPassword, arguments: passwordList[index]).then((value) => setState((){_futurePasswordList = passwordDao.readAll();}));
+                          },
                         ),
                         IconButton(
                             icon: const Icon(Icons.copy),
                             onPressed: () {
-                              Clipboard.setData(ClipboardData(
-                                      text: passwordList[index].password))
-                                  .then((value) => ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                          content: Text(
-                                              'Copied to your clipboard !'))));
+                              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                              if (showPassword) {
+                                Clipboard.setData(ClipboardData(
+                                        text: passwordList[index].password))
+                                    .then((value) => ScaffoldMessenger.of(
+                                            context)
+                                        .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                'Copied to your clipboard !'))));
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Show your passwords first!')));
+                              }
                             }),
                       ],
                     ),
                   ),
                 );
-              },
-              onReorder: (int oldIndex, int newIndex) {
-                setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  final Password item = passwordList.removeAt(oldIndex);
-                  passwordList.insert(newIndex, item);
-                });
               },
             );
           } else {
