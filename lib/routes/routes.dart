@@ -6,6 +6,7 @@ import 'package:gerador_senhas/pages/create_password.dart';
 import 'package:gerador_senhas/pages/edit_password.dart';
 import 'package:gerador_senhas/pages/home.dart';
 import 'package:gerador_senhas/pages/settings.dart';
+import 'package:gerador_senhas/pages/test.dart';
 
 class Routes {
   static Map<String, Widget Function(BuildContext)> list =
@@ -17,6 +18,7 @@ class Routes {
     "/settings": (_) => const Settings(),
     "/change-theme": (_) => const ChangeTheme(),
     "/about": (_) => const About(),
+    "/test": (_) => const Test(),
   };
 
   static const String authCheck = "/auth-check";
@@ -32,4 +34,6 @@ class Routes {
   static const String changeTheme = "/change-theme";
 
   static const String about = "/about";
+
+  static const String test = "/test";
 }

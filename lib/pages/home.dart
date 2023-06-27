@@ -46,6 +46,9 @@ class _HomeState extends State<Home> {
       ),
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.appName),
+        actions: [
+          IconButton(onPressed: () => Navigator.pushNamed(context, "/test"), icon: Icon(Icons.password))
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         shape: const RoundedRectangleBorder(
@@ -88,8 +91,8 @@ class _HomeState extends State<Home> {
                     });
                   },
                   child: ListTile(
-                    title: Text("${AppLocalizations.of(context)!.name} ${passwordList[index].name}"),
-                    subtitle: Text("${AppLocalizations.of(context)!.password} ${passwordList[index].password}"),
+                    title: Text("${AppLocalizations.of(context)!.name}: ${passwordList[index].name}"),
+                    subtitle: Text("${AppLocalizations.of(context)!.password}: ${passwordList[index].password}"),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

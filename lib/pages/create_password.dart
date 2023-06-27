@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gerador_senhas/database/dto/password.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
+import 'package:gerador_senhas/pages/test.dart';
 import 'package:gerador_senhas/util/util.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -22,6 +23,7 @@ class _CreatePasswordState extends State<CreatePassword> {
   TextEditingController password = TextEditingController();
   String? dropdownValue;
   final _formKey = GlobalKey<FormState>();
+  var baseUrl = "http://www.google.com/s2/favicons?sz=32&domain=";
 
   String? _next() {
     if (_formKey.currentState!.validate()) {
@@ -80,18 +82,30 @@ class _CreatePasswordState extends State<CreatePassword> {
             if (dropdownValue != null) ...[
               const Spacer(),
               Flexible(
-                flex: 5,
-                child: TextFormField(
-                  controller: passwordName,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context)!.insertName;
-                    }
-                    return null;
-                  },
+                flex: 2,
+                child: DropdownButtonFormField<SocialMedia>(
+                  menuMaxHeight: 200,
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
-                      labelText: AppLocalizations.of(context)!.nameRegistration),
+                      labelText: AppLocalizations.of(context)!.website),
+                  onChanged: (SocialMedia? value) {
+                    setState(() {
+                      passwordName.text = value!.name;
+                    });
+                  },
+                  items: Util.socialMediaList
+                      .map((SocialMedia e) => DropdownMenuItem<SocialMedia>(
+                    value: e,
+                    child: Row(
+                      children: [
+                        Image.network(
+                          "$baseUrl${e.url}",
+                        ),
+                        Text(e.name),
+                      ],
+                    ),
+                  ))
+                      .toList(),
                 ),
               ),
               if (dropdownValue == "Enter an existing password") ...[
@@ -101,7 +115,8 @@ class _CreatePasswordState extends State<CreatePassword> {
                   child: TextFormField(
                     controller: password,
                     decoration: InputDecoration(
-                        border: const OutlineInputBorder(), labelText: AppLocalizations.of(context)!.password),
+                        border: const OutlineInputBorder(),
+                        labelText: AppLocalizations.of(context)!.password),
                   ),
                 ),
               ],
@@ -134,7 +149,8 @@ class _CreatePasswordState extends State<CreatePassword> {
                     if (password != null) {
                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("${AppLocalizations.of(context)!.displayPassword} $password"),
+                        content: Text(
+                            "${AppLocalizations.of(context)!.displayPassword} $password"),
                         action: SnackBarAction(
                             label: AppLocalizations.of(context)!.copy,
                             onPressed: () {

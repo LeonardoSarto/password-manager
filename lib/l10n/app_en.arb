@@ -25,5 +25,6 @@
   "insertLength": "Insert a password length",
   "insertName": "Insert a name to the password",
   "select": "Select what do you want",
-  "tryAgain": "Try again"
+  "tryAgain": "Try again",
+  "website": "Where do these credentials come from?"
 }

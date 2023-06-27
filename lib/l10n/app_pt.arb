@@ -25,5 +25,6 @@
   "insertLength": "Insira o tamanho da senha",
   "insertName": "Insira um nome para a senha",
   "select": "Escolha o que deseja",
-  "tryAgain": "Tente novamente"
+  "tryAgain": "Tente novamente",
+  "website": "De onde vem essas credenciais?"
 }

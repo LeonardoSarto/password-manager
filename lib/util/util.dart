@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import '../pages/test.dart';
+
 class Util {
   static String generatePassword(String passwordLength) {
     String upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -19,4 +21,13 @@ class Util {
 
     return password;
   }
+
+  static const socialMediaList = [
+    SocialMedia("Facebook", "www.facebook.com"),
+    SocialMedia("Whatsapp", "web.whatsapp.com"),
+    SocialMedia("Instagram", "www.instagram.com"),
+    SocialMedia("Google", "gmail.com"),
+    SocialMedia("Twitter", "www.twitter.com"),
+    SocialMedia("Riot Games", "www.riotgames.com"),
+  ];
 }
