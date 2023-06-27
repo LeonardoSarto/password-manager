@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gerador_senhas/database/dto/password.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
 import 'package:gerador_senhas/util/util.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreatePassword extends StatefulWidget {
   const CreatePassword({super.key});
@@ -45,7 +46,7 @@ class _CreatePasswordState extends State<CreatePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text("Create password")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.newPassword)),
       body: Form(
         key: _formKey,
         child: Column(
@@ -56,13 +57,13 @@ class _CreatePasswordState extends State<CreatePassword> {
               child: DropdownButtonFormField(
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Select what do you want";
+                    return AppLocalizations.of(context)!.select;
                   }
                   return null;
                 },
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Select an option"),
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.option),
                 onChanged: (String? value) {
                   setState(() {
                     dropdownValue = value!;
@@ -84,13 +85,13 @@ class _CreatePasswordState extends State<CreatePassword> {
                   controller: passwordName,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Insert a name to the password";
+                      return AppLocalizations.of(context)!.insertName;
                     }
                     return null;
                   },
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Name the password"),
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.nameRegistration),
                 ),
               ),
               if (dropdownValue == "Enter an existing password") ...[
@@ -99,8 +100,8 @@ class _CreatePasswordState extends State<CreatePassword> {
                   flex: 5,
                   child: TextFormField(
                     controller: password,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), labelText: "Password"),
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(), labelText: AppLocalizations.of(context)!.password),
                   ),
                 ),
               ],
@@ -113,16 +114,16 @@ class _CreatePasswordState extends State<CreatePassword> {
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Insert a password length";
+                        return AppLocalizations.of(context)!.insertLength;
                       }
                       if (int.parse(value) < 8) {
-                        return "Your password is too short!";
+                        return AppLocalizations.of(context)!.shortPassword;
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Password length"),
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        labelText: AppLocalizations.of(context)!.length),
                   ),
                 ),
               ],
@@ -133,16 +134,16 @@ class _CreatePasswordState extends State<CreatePassword> {
                     if (password != null) {
                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("Your password is $password"),
+                        content: Text("${AppLocalizations.of(context)!.displayPassword} $password"),
                         action: SnackBarAction(
-                            label: "Copy",
+                            label: AppLocalizations.of(context)!.copy,
                             onPressed: () {
                               Clipboard.setData(ClipboardData(text: password));
                             }),
                       ));
                     }
                   },
-                  child: const Text("Register password")),
+                  child: Text(AppLocalizations.of(context)!.register)),
             ],
             const Spacer(),
           ],

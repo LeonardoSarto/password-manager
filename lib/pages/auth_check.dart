@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gerador_senhas/routes/routes.dart';
 import 'package:gerador_senhas/services/local_auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthCheck extends StatefulWidget {
   const AuthCheck({super.key});
@@ -48,7 +49,7 @@ class _AuthCheckState extends State<AuthCheck> {
                 children: [
                   Image.asset("assets/images/logo.jpeg"),
                   ElevatedButton(
-                      child: const Text("Try again"),
+                      child: Text(AppLocalizations.of(context)!.tryAgain),
                     onPressed: () {
                       checkLocalAuth();
                     }),

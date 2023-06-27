@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gerador_senhas/database/dto/password.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
 import 'package:gerador_senhas/routes/routes.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,7 +15,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   PasswordDao passwordDao = PasswordDao();
   Future<List<Password>>? _futurePasswordList;
-  bool showPassword = false;
 
   @override
   void initState() {
@@ -26,28 +26,26 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: Column(
-          children: [
-            DrawerHeader(child: Image.asset("assets/images/logo.jpeg")),
-            const ListTile(title: Text("Settings"), trailing: Icon(Icons.settings)),
-            const Divider(),
-            const ListTile(title: Text("About"), trailing: Icon(Icons.arrow_forward)),
-            const Divider(),
-          ]
-        ),
+        child: Column(children: [
+          DrawerHeader(child: Image.asset("assets/images/logo.jpeg")),
+          MaterialButton(
+            onPressed: () => Navigator.pushNamed(context, Routes.settings),
+            padding: EdgeInsets.zero,
+            child: ListTile(
+                title: Text(AppLocalizations.of(context)!.settings), trailing: const Icon(Icons.settings)),
+          ),
+          const Divider(),
+          MaterialButton(
+            onPressed: () => Navigator.pushNamed(context, Routes.about),
+            padding: EdgeInsets.zero,
+            child: ListTile(
+                title: Text(AppLocalizations.of(context)!.about), trailing: const Icon(Icons.arrow_forward)),
+          ),
+          const Divider(),
+        ]),
       ),
       appBar: AppBar(
-        title: const Text("Password manager"),
-        actions: [
-          IconButton(
-              icon:
-                  Icon(showPassword ? Icons.visibility : Icons.visibility_off),
-              onPressed: () {
-                setState(() {
-                  showPassword = !showPassword;
-                });
-              }),
-        ],
+        title: Text(AppLocalizations.of(context)!.appName),
       ),
       floatingActionButton: FloatingActionButton(
         shape: const RoundedRectangleBorder(
@@ -78,9 +76,9 @@ class _HomeState extends State<Home> {
                       color: Colors.red,
                       alignment: Alignment.centerRight,
                       padding: const EdgeInsets.only(right: 20),
-                      child: const Text(
-                        "Delete",
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        AppLocalizations.of(context)!.delete,
+                        style: const TextStyle(color: Colors.white),
                       )),
                   key: ValueKey<Password>(passwordList[index]),
                   onDismissed: (direction) {
@@ -90,36 +88,32 @@ class _HomeState extends State<Home> {
                     });
                   },
                   child: ListTile(
-                    title: Text("Name: ${passwordList[index].name}"),
-                    subtitle: Text(
-                        "Password: ${showPassword ? passwordList[index].password : ("*" * passwordList[index].password.length)}"),
+                    title: Text("${AppLocalizations.of(context)!.name} ${passwordList[index].name}"),
+                    subtitle: Text("${AppLocalizations.of(context)!.password} ${passwordList[index].password}"),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            Navigator.pushNamed(context, Routes.editPassword, arguments: passwordList[index]).then((value) => setState((){_futurePasswordList = passwordDao.readAll();}));
+                            Navigator.pushNamed(context, Routes.editPassword,
+                                    arguments: passwordList[index])
+                                .then((value) => setState(() {
+                                      _futurePasswordList =
+                                          passwordDao.readAll();
+                                    }));
                           },
                         ),
                         IconButton(
                             icon: const Icon(Icons.copy),
                             onPressed: () {
-                              ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                              if (showPassword) {
-                                Clipboard.setData(ClipboardData(
-                                        text: passwordList[index].password))
-                                    .then((value) => ScaffoldMessenger.of(
-                                            context)
-                                        .showSnackBar(const SnackBar(
-                                            content: Text(
-                                                'Copied to your clipboard !'))));
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Show your passwords first!')));
-                              }
+                              ScaffoldMessenger.of(context)
+                                  .removeCurrentSnackBar();
+                              Clipboard.setData(ClipboardData(
+                                      text: passwordList[index].password))
+                                  .then((value) => ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context)!.clipboard))));
                             }),
                       ],
                     ),
@@ -128,7 +122,7 @@ class _HomeState extends State<Home> {
               },
             );
           } else {
-            return const Center(child: Text("Not found any passwords"));
+            return Center(child: Text(AppLocalizations.of(context)!.notFound));
           }
         },
       ),

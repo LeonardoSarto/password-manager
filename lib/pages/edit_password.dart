@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../database/dto/password.dart';
 
 class EditPassword extends StatefulWidget {
@@ -11,17 +11,17 @@ class EditPassword extends StatefulWidget {
 }
 
 class _EditPasswordState extends State<EditPassword> {
-  final passwordField = TextFormField(
-    decoration: const InputDecoration(
-        border: OutlineInputBorder(), labelText: "Password"),
+  passwordField(context) => TextFormField(
+    decoration: InputDecoration(
+        border: const OutlineInputBorder(), labelText: AppLocalizations.of(context)!.password),
     controller: TextEditingController(),
   );
-  final nameField = TextFormField(
+  nameField(context) => TextFormField(
     decoration:
-        const InputDecoration(border: OutlineInputBorder(), labelText: "Name"),
+        InputDecoration(border: const OutlineInputBorder(), labelText: AppLocalizations.of(context)!.name),
     controller: TextEditingController(),
   );
-  final textError = const Center(child: Text("Credentials not found"));
+  textError(context) => Center(child: Text(AppLocalizations.of(context)!.credentialsNotFound));
   late Password credentials;
   PasswordDao passwordDao = PasswordDao();
 
@@ -33,23 +33,23 @@ class _EditPasswordState extends State<EditPassword> {
           ? Column(
               children: [
                 const Spacer(),
-                Flexible(child: nameField),
+                Flexible(child: nameField(context)),
                 const Spacer(),
-                Flexible(child: passwordField),
+                Flexible(child: passwordField(context)),
                 const Spacer(),
                 FilledButton(
-                    child: const Text("Save"),
+                    child: Text(AppLocalizations.of(context)!.save),
                     onPressed: () {
                       Password editCredentials = Password(
-                          password: passwordField.controller!.text,
-                          name: nameField.controller!.text,
+                          password: passwordField(context).controller!.text,
+                          name: nameField(context).controller!.text,
                           id: credentials.id);
                       passwordDao.update(editCredentials);
                       Navigator.pop(context);
                     }),
               ],
             )
-          : textError,
+          : textError(context),
     );
   }
 
@@ -65,7 +65,7 @@ class _EditPasswordState extends State<EditPassword> {
   }
 
   fillFields(Password credentials) {
-    nameField.controller?.text = credentials.name;
-    passwordField.controller?.text = credentials.password;
+    nameField(context).controller?.text = credentials.name;
+    passwordField(context).controller?.text = credentials.password;
   }
 }
