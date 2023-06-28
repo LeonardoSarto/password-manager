@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gerador_senhas/database/dto/password.dart';
+import 'package:gerador_senhas/components/custom_dropdown_button.dart';
+import 'package:gerador_senhas/components/custom_text_form_field.dart';
+import 'package:gerador_senhas/database/dto/account.dart';
+import 'package:gerador_senhas/database/dto/credentials.dart';
+import 'package:gerador_senhas/database/dto/social_media.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
 import 'package:gerador_senhas/pages/test.dart';
 import 'package:gerador_senhas/util/util.dart';
@@ -14,135 +18,146 @@ class CreatePassword extends StatefulWidget {
 }
 
 class _CreatePasswordState extends State<CreatePassword> {
-  List<String> list = <String>[
-    'Create new password',
-    'Enter an existing password'
-  ];
-  TextEditingController passwordName = TextEditingController();
-  TextEditingController passwordLength = TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController login = TextEditingController();
+  TextEditingController socialMedia = TextEditingController();
   TextEditingController password = TextEditingController();
-  String? dropdownValue;
   final _formKey = GlobalKey<FormState>();
   var baseUrl = "http://www.google.com/s2/favicons?sz=32&domain=";
+  List<Account> accountList = [Account()];
 
   String? _next() {
     if (_formKey.currentState!.validate()) {
       PasswordDao passwordDao = PasswordDao();
-      Password registerPassword;
+      Credentials registerPassword;
 
       if (password.value.text != "") {
-        registerPassword = Password(
-            password: password.value.text, name: passwordName.value.text);
+        registerPassword = Credentials(
+            socialMedia: SocialMedia(name.value.text, name.value.text));
       } else {
-        registerPassword = Password(
-            password: Util.generatePassword(passwordLength.value.text),
-            name: passwordName.value.text);
+        registerPassword = Credentials(
+            socialMedia: SocialMedia(name.value.text, name.value.text));
       }
       passwordDao.save(registerPassword);
-      return registerPassword.password;
+      return "teste";
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    accountList.first.login = login.text;
+    accountList.first.password = password.text;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text(AppLocalizations.of(context)!.newPassword)),
       body: Form(
         key: _formKey,
-        child: Column(
-          children: [
-            const Spacer(),
-            Flexible(
-              flex: 2,
-              child: DropdownButtonFormField(
-                validator: (value) {
+        child: Scrollbar(
+          child: ListView(
+            children: [
+              CustomDropdownButton<SocialMedia>(
+                labelText: AppLocalizations.of(context)!.socialMedia,
+                onChanged: (SocialMedia? value) {
+                  setState(() {
+                    if (value != null) {
+                      socialMedia.text = value.name;
+                      name.text = value.name;
+                    }
+                  });
+                },
+                items: Util.socialMediaList
+                    .map((SocialMedia e) => DropdownMenuItem<SocialMedia>(
+                          value: e,
+                          child: Row(
+                            children: [
+                              Image.network(
+                                "$baseUrl${e.url}",
+                              ),
+                              Text(e.name),
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ),
+              CustomTextFormField(
+                controller: name,
+                labelText: AppLocalizations.of(context)!.name,
+                validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.select;
+                    return AppLocalizations.of(context)!.enterName;
                   }
                   return null;
                 },
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: AppLocalizations.of(context)!.option),
-                onChanged: (String? value) {
-                  setState(() {
-                    dropdownValue = value!;
-                  });
-                },
-                items: list.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
               ),
-            ),
-            if (dropdownValue != null) ...[
-              const Spacer(),
-              Flexible(
-                flex: 2,
-                child: DropdownButtonFormField<SocialMedia>(
-                  menuMaxHeight: 200,
-                  decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: AppLocalizations.of(context)!.website),
-                  onChanged: (SocialMedia? value) {
-                    setState(() {
-                      passwordName.text = value!.name;
-                    });
-                  },
-                  items: Util.socialMediaList
-                      .map((SocialMedia e) => DropdownMenuItem<SocialMedia>(
-                    value: e,
-                    child: Row(
-                      children: [
-                        Image.network(
-                          "$baseUrl${e.url}",
-                        ),
-                        Text(e.name),
-                      ],
-                    ),
-                  ))
-                      .toList(),
-                ),
-              ),
-              if (dropdownValue == "Enter an existing password") ...[
-                const Spacer(),
-                Flexible(
-                  flex: 5,
-                  child: TextFormField(
-                    controller: password,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: AppLocalizations.of(context)!.password),
+              ListView.builder(
+                itemCount: accountList.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) => Card(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Spacer(),
+                          const Flexible(
+                            flex: 2,
+                            child: Text("Account"),
+                          ),
+                          const Spacer(flex: 6),
+                          IconButton(
+                              onPressed: () => setState(() {
+                                    if (accountList.length > 1) {
+                                      accountList.removeAt(index);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text("At least 1 account"),
+                                      ));
+                                    }
+                                  }),
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )),
+                          IconButton(
+                              onPressed: () => setState(() {
+                                    accountList.add(Account(
+                                        login: login.text,
+                                        password: password.text));
+                                  }),
+                              icon: const Icon(
+                                Icons.add,
+                              )),
+                        ],
+                      ),
+                      CustomTextFormField(
+                        controller: login,
+                        labelText: AppLocalizations.of(context)!.login,
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(context)!.enterLogin;
+                          }
+                          return null;
+                        },
+                      ),
+                      CustomTextFormField(
+                        controller: password,
+                        labelText: AppLocalizations.of(context)!.password,
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(context)!.enterPassword;
+                          }
+                          if (value.length < 8) {
+                            return AppLocalizations.of(context)!.shortPassword;
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              ],
-              if (dropdownValue == "Create new password") ...[
-                const Spacer(),
-                Flexible(
-                  flex: 5,
-                  child: TextFormField(
-                    controller: passwordLength,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return AppLocalizations.of(context)!.insertLength;
-                      }
-                      if (int.parse(value) < 8) {
-                        return AppLocalizations.of(context)!.shortPassword;
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: AppLocalizations.of(context)!.length),
-                  ),
-                ),
-              ],
-              const Spacer(),
+              ),
               FilledButton(
                   onPressed: () {
                     String? password = _next();
@@ -161,8 +176,7 @@ class _CreatePasswordState extends State<CreatePassword> {
                   },
                   child: Text(AppLocalizations.of(context)!.register)),
             ],
-            const Spacer(),
-          ],
+          ),
         ),
       ),
     );

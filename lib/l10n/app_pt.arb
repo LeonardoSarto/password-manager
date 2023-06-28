@@ -2,6 +2,7 @@
   "appName": "Gerenciador de Senhas",
   "password": "Senha",
   "name": "Nome",
+  "login": "Login",
   "delete": "Excluir",
   "clipboard": "Copiado!",
   "notFound": "Não foi encontrado nenhuma senha",
@@ -11,8 +12,8 @@
   "nameRegistration": "Nome da senha",
   "length": "Tamanho da senha",
   "save": "Salvar",
-  "light": "Tema claro",
-  "dark": "Tema escuro",
+  "light": "Claro",
+  "dark": "Escuro",
   "system": "Tema do sistema",
   "settings": "Configurações",
   "about": "Sobre",
@@ -26,5 +27,5 @@
   "insertName": "Insira um nome para a senha",
   "select": "Escolha o que deseja",
   "tryAgain": "Tente novamente",
-  "website": "De onde vem essas credenciais?"
+  "socialMedia": "Qual rede social essas credenciais pertencem?"
 }

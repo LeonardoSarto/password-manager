@@ -2,6 +2,7 @@
   "appName": "Password Manager",
   "password": "Password",
   "name": "Name",
+  "login": "Login",
   "delete": "Delete",
   "clipboard": "Copied to your clipboard!",
   "notFound": "Not found any passwords",
@@ -22,9 +23,10 @@
   "displayPassword": "Your password is",
   "register": "Register",
   "shortPassword": "Your password is too short!",
-  "insertLength": "Insert a password length",
-  "insertName": "Insert a name to the password",
+  "enterPassword": "Enter a password",
+  "enterName": "Enter a name",
+  "enterLogin": "Enter a login",
   "select": "Select what do you want",
   "tryAgain": "Try again",
-  "website": "Where do these credentials come from?"
+  "socialMedia": "Select the Social Network"
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gerador_senhas/database/dto/social_media.dart';
 import 'package:http/http.dart' as http;
 
 class Test extends StatefulWidget {
@@ -39,11 +40,4 @@ class _TestState extends State<Test> {
       ),
     );
   }
-}
-
-class SocialMedia {
-  final String name;
-  final String url;
-
-  const SocialMedia(this.name, this.url);
 }

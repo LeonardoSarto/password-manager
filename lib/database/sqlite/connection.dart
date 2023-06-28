@@ -13,7 +13,7 @@ class Connection {
         path,
         version: 1,
         onCreate: (db, v){
-          db.execute(ScriptBd.createTablePassword);
+          db.execute(ScriptBd.createTableCredentials);
         },
       );
       _fechado = false;

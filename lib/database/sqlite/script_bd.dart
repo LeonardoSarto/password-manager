@@ -1,10 +1,12 @@
 class ScriptBd {
 
-  static const createTablePassword = '''
-   CREATE TABLE password(
+  static const createTableCredentials = '''
+   CREATE TABLE credentials(
     id INTEGER NOT NULL PRIMARY KEY,
+    login VARCHAR(200) NOT NULL,
     password VARCHAR(200) NOT NULL,
-    name VARCHAR(200) NOT NULL,
+    name VARCHAR(200),
+    social_media VARCHAR(200),
     created_in DATE,
     updated_in DATE
    )''';

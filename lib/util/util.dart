@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:gerador_senhas/database/dto/social_media.dart';
+
 import '../pages/test.dart';
 
 class Util {

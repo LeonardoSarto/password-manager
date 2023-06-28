@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gerador_senhas/database/dto/password.dart';
+import 'package:gerador_senhas/database/dto/credentials.dart';
 import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
 import 'package:gerador_senhas/routes/routes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,7 +14,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   PasswordDao passwordDao = PasswordDao();
-  Future<List<Password>>? _futurePasswordList;
+  Future<List<Credentials>>? _futurePasswordList;
 
   @override
   void initState() {
@@ -67,7 +67,7 @@ class _HomeState extends State<Home> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            List<Password> passwordList = snapshot.data!;
+            List<Credentials> passwordList = snapshot.data!;
             return ListView.separated(
               separatorBuilder: (context, index) => const Divider(),
               physics: const NeverScrollableScrollPhysics(),
@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
                         AppLocalizations.of(context)!.delete,
                         style: const TextStyle(color: Colors.white),
                       )),
-                  key: ValueKey<Password>(passwordList[index]),
+                  key: ValueKey<Credentials>(passwordList[index]),
                   onDismissed: (direction) {
                     setState(() {
                       passwordDao.delete(passwordList[index].id!);
@@ -92,7 +92,7 @@ class _HomeState extends State<Home> {
                   },
                   child: ListTile(
                     title: Text("${AppLocalizations.of(context)!.name}: ${passwordList[index].name}"),
-                    subtitle: Text("${AppLocalizations.of(context)!.password}: ${passwordList[index].password}"),
+                    subtitle: Text("${AppLocalizations.of(context)!.password}: "),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -113,7 +113,7 @@ class _HomeState extends State<Home> {
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
                               Clipboard.setData(ClipboardData(
-                                      text: passwordList[index].password))
+                                      text: "passwordList[index].password"))
                                   .then((value) => ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                           content: Text(AppLocalizations.of(context)!.clipboard))));
