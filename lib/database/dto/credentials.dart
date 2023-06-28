@@ -1,19 +1,25 @@
-import 'package:gerador_senhas/database/dto/social_media.dart';
 
 class Credentials {
   final int? id;
-  final SocialMedia? socialMedia;
-  final String? name;
+  String? login;
+  String? password;
+  bool showPassword = false;
+  int? accountId;
   final DateTime createdIn = DateTime.now();
   final DateTime updatedIn = DateTime.now();
 
-  Credentials({this.id, this.socialMedia, this.name});
+  Credentials({this.password, this.id, this.login, this.accountId});
 
   static Credentials fromJson(Map<dynamic, dynamic> json) {
     return Credentials(
-      id: json['id'],
-      socialMedia: json['socialMedia'],
-      name: json['name'],
-    );
+        password: json['password'],
+        id: json['id'],
+        login: json['login'],
+        accountId: json['account']);
+  }
+
+  @override
+  String toString() {
+    return 'Credentials{id: $id, login: $login, password: $password, createdIn: $createdIn, updatedIn: $updatedIn}';
   }
 }

@@ -21,12 +21,15 @@
   "credentialsNotFound": "Credentials not found",
   "copy": "Copiar",
   "displayPassword": "Your password is",
-  "register": "Register",
+  "register": "Save",
   "shortPassword": "Your password is too short!",
   "enterPassword": "Enter a password",
   "enterName": "Enter a name",
   "enterLogin": "Enter a login",
   "select": "Select what do you want",
   "tryAgain": "Try again",
-  "socialMedia": "Select the Social Network"
+  "socialMedia": "Select the Social Network",
+  "appDescription": "This is the best password manager app you'll ever see! It utilizes various security tools to prevent anyone else from accessing your credentials without your permission.",
+  "aboutApp": "About the app",
+  "version": "Version of app"
 }

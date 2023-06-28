@@ -7,13 +7,14 @@ class Connection {
   static bool _fechado = true;
 
   static Future<Database> create() async {
-    if(_fechado){
+    if(_fechado) {
       String path = join(await getDatabasesPath(), 'banco.db');
       _database = await openDatabase(
         path,
         version: 1,
         onCreate: (db, v){
           db.execute(ScriptBd.createTableCredentials);
+          db.execute(ScriptBd.createTableAccount);
         },
       );
       _fechado = false;

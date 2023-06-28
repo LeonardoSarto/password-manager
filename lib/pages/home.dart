@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gerador_senhas/database/dto/credentials.dart';
-import 'package:gerador_senhas/database/sqlite/dao/password_dao.dart';
+import 'package:gerador_senhas/components/custom_modal_bottom_sheet.dart';
+import 'package:gerador_senhas/database/dto/account.dart';
+import 'package:gerador_senhas/database/sqlite/dao/account_dao.dart';
 import 'package:gerador_senhas/routes/routes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gerador_senhas/util/clipboard_helper.dart';
+import 'package:gerador_senhas/util/util.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,13 +16,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  PasswordDao passwordDao = PasswordDao();
-  Future<List<Credentials>>? _futurePasswordList;
+  AccountDao accountDao = AccountDao();
+  Future<List<Account>>? _futureAccountList;
 
   @override
   void initState() {
     super.initState();
-    _futurePasswordList = passwordDao.readAll();
+    _futureAccountList = accountDao.readAll();
   }
 
   @override
@@ -32,95 +35,126 @@ class _HomeState extends State<Home> {
             onPressed: () => Navigator.pushNamed(context, Routes.settings),
             padding: EdgeInsets.zero,
             child: ListTile(
-                title: Text(AppLocalizations.of(context)!.settings), trailing: const Icon(Icons.settings)),
+                title: Text(AppLocalizations.of(context)!.settings),
+                trailing: const Icon(Icons.settings)),
           ),
           const Divider(),
           MaterialButton(
             onPressed: () => Navigator.pushNamed(context, Routes.about),
             padding: EdgeInsets.zero,
             child: ListTile(
-                title: Text(AppLocalizations.of(context)!.about), trailing: const Icon(Icons.arrow_forward)),
+                title: Text(AppLocalizations.of(context)!.about),
+                trailing: const Icon(Icons.arrow_forward)),
           ),
-          const Divider(),
         ]),
       ),
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.appName),
-        actions: [
-          IconButton(onPressed: () => Navigator.pushNamed(context, "/test"), icon: Icon(Icons.password))
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(30))),
         onPressed: () {
-          Navigator.pushNamed(context, Routes.createPassword)
+          Navigator.pushNamed(context, Routes.createAccount)
               .then((value) async => setState(() {
-                    _futurePasswordList = passwordDao.readAll();
+                    _futureAccountList = accountDao.readAll();
                   }));
         },
         child: const Icon(Icons.add),
       ),
       body: FutureBuilder(
-        future: _futurePasswordList,
+        future: _futureAccountList,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            List<Credentials> passwordList = snapshot.data!;
+            List<Account> accountList = snapshot.data!;
             return ListView.separated(
               separatorBuilder: (context, index) => const Divider(),
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: passwordList.length,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: accountList.length,
               itemBuilder: (BuildContext context, int index) {
-                return Dismissible(
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                      color: Colors.red,
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Text(
-                        AppLocalizations.of(context)!.delete,
-                        style: const TextStyle(color: Colors.white),
-                      )),
-                  key: ValueKey<Credentials>(passwordList[index]),
-                  onDismissed: (direction) {
-                    setState(() {
-                      passwordDao.delete(passwordList[index].id!);
-                      passwordList.removeAt(index);
-                    });
-                  },
-                  child: ListTile(
-                    title: Text("${AppLocalizations.of(context)!.name}: ${passwordList[index].name}"),
-                    subtitle: Text("${AppLocalizations.of(context)!.password}: "),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.pushNamed(context, Routes.editPassword,
-                                    arguments: passwordList[index])
-                                .then((value) => setState(() {
-                                      _futurePasswordList =
-                                          passwordDao.readAll();
-                                    }));
-                          },
-                        ),
-                        IconButton(
-                            icon: const Icon(Icons.copy),
-                            onPressed: () {
-                              ScaffoldMessenger.of(context)
-                                  .removeCurrentSnackBar();
-                              Clipboard.setData(ClipboardData(
-                                      text: "passwordList[index].password"))
-                                  .then((value) => ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          content: Text(AppLocalizations.of(context)!.clipboard))));
-                            }),
-                      ],
-                    ),
+                var account = accountList[index];
+                return ExpansionTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.network(
+                        "${Util.baseUrl}${account.socialMedia!.url}",
+                        scale: 1,
+                      ),
+                      SizedBox(width: Util.displayWidth(context) * 0.02),
+                      Text(account.socialMedia!.name),
+                    ],
                   ),
+                  subtitle: Text(account.socialMedia!.url),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        isDismissible: false,
+                        enableDrag: false,
+                        context: context,
+                        builder: (context) =>
+                            CustomModalBottomSheet(account: account),
+                      ).then((value) {
+                        if (value) {
+                          setState(() {
+                            _futureAccountList = accountDao.readAll();
+                          });
+                        }
+                      });
+                    },
+                  ),
+                  children: [
+                    ListView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      children: account.credentials
+                          .map((e) => Card(
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title:
+                              Text(AppLocalizations.of(context)!.login),
+                              subtitle: Text(e.login!),
+                              trailing: IconButton(
+                                  onPressed: () => ClipboardHelper.copy(
+                                      e.login!, context),
+                                  icon: const Icon(Icons.copy)),
+                            ),
+                            ListTile(
+                              title: Text(
+                                  AppLocalizations.of(context)!.password),
+                              subtitle: Text(e.showPassword
+                                  ? e.password!
+                                  : '*' * e.password!.length),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                      onPressed: () => setState(() {
+                                        e.showPassword =
+                                        !e.showPassword;
+                                      }),
+                                      icon: Icon(e.showPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility)),
+                                  IconButton(
+                                      onPressed: () => ClipboardHelper.copy(
+                                          e.login!, context),
+                                      icon: const Icon(Icons.copy)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                          .toList(),
+                    ),
+                  ],
                 );
               },
             );

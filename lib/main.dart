@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gerador_senhas/components/theme-data/dark_theme.dart';
+import 'package:gerador_senhas/components/theme-data/light_theme.dart';
 import 'package:gerador_senhas/models/model_theme.dart';
 import 'package:gerador_senhas/providers/providers.dart';
 import 'package:gerador_senhas/routes/routes.dart';
@@ -40,8 +42,8 @@ class MyApp extends StatelessWidget {
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             themeMode: themeNotifier.isSystem ? ThemeMode.system : themeNotifier.isDark ? ThemeMode.system : ThemeMode.light,
-            theme: ThemeData.light(useMaterial3: true),
-            darkTheme: ThemeData.dark(useMaterial3: true),
+            theme: LightThemeData().themeData,
+            darkTheme: DarkThemeData().themeData,
             initialRoute: Routes.authCheck,
             routes: Routes.list,
           );

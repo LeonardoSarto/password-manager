@@ -9,21 +9,45 @@ import 'package:gerador_senhas/database/sqlite/dao/credentials_dao.dart';
 import 'package:gerador_senhas/util/util.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CreatePassword extends StatefulWidget {
-  const CreatePassword({super.key});
+class EditAccount extends StatefulWidget {
+  const EditAccount({super.key});
 
   @override
-  State<CreatePassword> createState() => _CreatePasswordState();
+  State<EditAccount> createState() => _EditAccountState();
 }
 
-class _CreatePasswordState extends State<CreatePassword> {
-  TextEditingController name = TextEditingController();
-  TextEditingController socialMedia = TextEditingController();
-  List<TextEditingController> login = [TextEditingController()];
-  List<TextEditingController> password = [TextEditingController()];
+class _EditAccountState extends State<EditAccount> {
+  var name = TextEditingController();
+  var socialMedia = TextEditingController();
+  List<TextEditingController> login = [];
+  List<TextEditingController> password = [];
   final _formKey = GlobalKey<FormState>();
-  List<Credentials> credentialList = [Credentials()];
+  List<Credentials> credentialList = [];
   List<FocusNode> focusPasswordList = [FocusNode()];
+  late Account account;
+
+  bool getValueByArguments(BuildContext context) {
+    var argument = ModalRoute.of(context);
+    if (argument != null) {
+      account = argument.settings.arguments as Account;
+      fillFields(account);
+      return true;
+    }
+    return false;
+  }
+
+  fillFields(Account account) {
+    name.text = account.name;
+    socialMedia.text = Util.socialMediaList.first.name;
+    credentialList = account.credentials;
+    for (var element in credentialList) {
+      login.add(TextEditingController(text: element.login));
+      password.add(TextEditingController(text: element.password));
+      var focusNode = FocusNode();
+      focusNode.addListener(whenChangeFocus);
+      focusPasswordList.add(focusNode);
+    }
+  }
 
   Future<bool> _next() async {
     try {
@@ -33,7 +57,8 @@ class _CreatePasswordState extends State<CreatePassword> {
 
         var account = Account(
             name: name.value.text,
-            socialMedia: SocialMedia(socialMedia.value.text, ""), credentials: []);
+            socialMedia: SocialMedia(socialMedia.value.text, ""),
+            credentials: []);
         account = await registerAccount.save(account);
 
         for (var index = 0; index < credentialList.length; index++) {
@@ -50,12 +75,6 @@ class _CreatePasswordState extends State<CreatePassword> {
   }
 
   @override
-  void initState() {
-    focusPasswordList.first.addListener(whenChangeFocus);
-    super.initState();
-  }
-
-  @override
   void dispose() {
     for (var element in focusPasswordList) {
       element.dispose();
@@ -69,6 +88,7 @@ class _CreatePasswordState extends State<CreatePassword> {
 
   @override
   Widget build(BuildContext context) {
+    getValueByArguments(context);
     return Scaffold(
       bottomSheet: SizedBox(
         width: Util.displayWidth(context),
@@ -101,7 +121,7 @@ class _CreatePasswordState extends State<CreatePassword> {
             FilledButton(
                 onPressed: () {
                   _next().then((value) {
-                    if(value) {
+                    if (value) {
                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Success"),
@@ -182,7 +202,7 @@ class _CreatePasswordState extends State<CreatePassword> {
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
-                                            content: Text("At least 1 account"),
+                                        content: Text("At least 1 account"),
                                       ));
                                     }
                                   }),
@@ -200,7 +220,8 @@ class _CreatePasswordState extends State<CreatePassword> {
                           controller: login[index],
                           labelText: AppLocalizations.of(context)!.login,
                           onChanged: (String? value) {
-                            credentialList[index].login = login[index].value.text;
+                            credentialList[index].login =
+                                login[index].value.text;
                           },
                           validator: (String? value) {
                             if (value == null || value.isEmpty) {
@@ -216,7 +237,8 @@ class _CreatePasswordState extends State<CreatePassword> {
                         child: CustomTextFormField(
                           focusNode: focusPasswordList[index],
                           onChanged: (String? value) {
-                            credentialList[index].password = password[index].value.text;
+                            credentialList[index].password =
+                                password[index].value.text;
                           },
                           controller: password[index],
                           labelText: AppLocalizations.of(context)!.password,

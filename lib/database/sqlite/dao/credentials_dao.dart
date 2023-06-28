@@ -3,7 +3,7 @@ import 'package:gerador_senhas/database/interface/generic_dao.dart';
 import 'package:gerador_senhas/database/sqlite/connection.dart';
 import 'package:sqflite/sqflite.dart';
 
-class PasswordDao extends GenericDao<Credentials, int> {
+class CredentialsDao extends GenericDao<Credentials, int> {
 
   @override
   Future<bool> delete(id) async {
@@ -35,9 +35,9 @@ class PasswordDao extends GenericDao<Credentials, int> {
   Future<Credentials> save(Credentials data) async {
     Database db = await Connection.create();
     String sql;
-    sql = 'INSERT INTO credentials (password, name, login, social_media) VALUES (?, ?, ?, ?)';
-    int id = await db.rawInsert(sql, [data.name, data.socialMedia]);
-    data = Credentials(id: id, name: data.name);
+    sql = 'INSERT INTO credentials (password, login, account_id, created_in, updated_in) VALUES (?, ?, ?, ?, ?)';
+    int id = await db.rawInsert(sql, [data.password, data.login, data.accountId, data.createdIn.toString(), data.updatedIn.toString()]);
+    data = Credentials(id: id, password: data.password, login: data.login);
     return data;
   }
 
@@ -48,12 +48,32 @@ class PasswordDao extends GenericDao<Credentials, int> {
         throw Exception("Not found");
       }
       Database db = await Connection.create();
-      var sql = 'UPDATE password SET credentials = ?, name = ? WHERE id = ?';
-      int id = await db.rawUpdate(sql, [ data.name, data.id]);
+      var sql = 'UPDATE password SET credentials = ?, password = ?, login = ?, updated_in = ? WHERE id = ?';
+      int id = await db.rawUpdate(sql, [data.password, data.login, data.updatedIn, data.id]);
       return id;
     } catch(e) {
       rethrow;
     }
+  }
+
+  Future<List<Credentials>> saveAll(List<Credentials> data) async {
+    Database db = await Connection.create();
+    String sql;
+    sql = 'INSERT INTO credentials (password, login) VALUES (?, ?)';
+    for (var element in data) {
+      int id = await db.rawInsert(sql, [element.password, element.login]);
+      element = Credentials(id: id, password: element.password, login: element.login);
+    }
+    return data;
+  }
+
+  Future<List<Credentials>> findByAccountId(int id) async {
+    Database db = await Connection.create();
+    List<Credentials> listaAlunos = (await db.query("credentials", where: 'account_id = ?', whereArgs: [id])).map<Credentials>(Credentials.fromJson).toList();
+    if (listaAlunos.isEmpty) {
+      throw Exception('Not found');
+    }
+    return listaAlunos;
   }
 
 }

@@ -21,11 +21,15 @@
   "credentialsNotFound": "Credenciais não encontradas",
   "copy": "Copiar",
   "displayPassword": "Sua senha é",
-  "register": "Cadastrar",
+  "register": "Salvar",
   "shortPassword": "Sua senha é muito curta",
   "insertLength": "Insira o tamanho da senha",
   "insertName": "Insira um nome para a senha",
   "select": "Escolha o que deseja",
   "tryAgain": "Tente novamente",
-  "socialMedia": "Qual rede social essas credenciais pertencem?"
+  "socialMedia": "Qual rede social essas credenciais pertencem?",
+  "appDescription": "Esse é o melhor aplicativo de gerenciamento de senhas que você já viu! Ele utiliza várias ferramentas de segurança para evitar que qualquer outra pessoa acesse suas credenciais sem sua permissão.",
+  "aboutApp": "Sobre o aplicativo",
+  "version": "Versão do aplicativo"
+
 }

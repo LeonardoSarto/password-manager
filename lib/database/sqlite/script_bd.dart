@@ -5,10 +5,19 @@ class ScriptBd {
     id INTEGER NOT NULL PRIMARY KEY,
     login VARCHAR(200) NOT NULL,
     password VARCHAR(200) NOT NULL,
-    name VARCHAR(200),
+    created_in DATETIME,
+    updated_in DATETIME,
+    account_id INTEGER NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES account (id)
+   )''';
+
+  static const createTableAccount = '''
+   CREATE TABLE account(
+    id INTEGER NOT NULL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
     social_media VARCHAR(200),
-    created_in DATE,
-    updated_in DATE
+    created_in DATETIME,
+    updated_in DATETIME
    )''';
 
   static const insercaoCursos = [

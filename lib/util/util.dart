@@ -1,16 +1,16 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:gerador_senhas/database/dto/social_media.dart';
 
-import '../pages/test.dart';
 
 class Util {
-  static String generatePassword(String passwordLength) {
+  static String generatePassword(int passwordLength) {
     String upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     String lower = 'abcdefghijklmnopqrstuvwxyz';
     String numbers = '1234567890';
     String symbols = '!@#\$%^&*()<>,./';
-    int passLength = int.parse(passwordLength);
+    int passLength = passwordLength;
     String seed = upper + lower + numbers + symbols;
     String password = '';
     List<String> list = seed.split('').toList();
@@ -32,4 +32,18 @@ class Util {
     SocialMedia("Twitter", "www.twitter.com"),
     SocialMedia("Riot Games", "www.riotgames.com"),
   ];
+
+  static Size displaySize(BuildContext context) {
+    return MediaQuery.of(context).size;
+  }
+
+  static double displayHeight(BuildContext context) {
+    return displaySize(context).height;
+  }
+
+  static double displayWidth(BuildContext context) {
+    return displaySize(context).width;
+  }
+
+  static const baseUrl = "http://www.google.com/s2/favicons?sz=32&domain=";
 }
