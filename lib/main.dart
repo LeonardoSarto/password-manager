@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
             ],
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
-            themeMode: themeNotifier.isSystem ? ThemeMode.system : themeNotifier.isDark ? ThemeMode.system : ThemeMode.light,
+            themeMode: themeNotifier.isSystem ? ThemeMode.system : themeNotifier.isDark ? ThemeMode.dark : ThemeMode.light,
             theme: LightThemeData().themeData,
             darkTheme: DarkThemeData().themeData,
             initialRoute: Routes.authCheck,

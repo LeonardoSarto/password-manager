@@ -12,7 +12,7 @@ class Settings extends StatelessWidget {
     return Consumer<ModelTheme>(
         builder: (context, ModelTheme themeNotifier, _) {
           return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(title: Text("Settings"),),
             body: Center(
               child: Column(
                 children: [
