@@ -5,6 +5,7 @@ import 'package:gerador_senhas/pages/auth_check.dart';
 import 'package:gerador_senhas/pages/create_password.dart';
 import 'package:gerador_senhas/pages/edit_account.dart';
 import 'package:gerador_senhas/pages/home.dart';
+import 'package:gerador_senhas/pages/introduction.dart';
 import 'package:gerador_senhas/pages/settings.dart';
 
 class Routes {
@@ -17,6 +18,7 @@ class Routes {
     "/settings": (_) => const Settings(),
     "/change_theme": (_) => const ChangeTheme(),
     "/about": (_) => About(),
+    "/introduction": (_) => Introduction(),
   };
 
   static const String authCheck = "/auth_check";
@@ -32,5 +34,7 @@ class Routes {
   static const String changeTheme = "/change_theme";
 
   static const String about = "/about";
+
+  static const String intro = "/introduction";
 
 }

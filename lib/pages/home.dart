@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
             padding: EdgeInsets.zero,
             child: ListTile(
                 title: Text(AppLocalizations.of(context)!.about),
-                trailing: const Icon(Icons.arrow_forward)),
+                trailing: const Icon(Icons.info)),
           ),
         ]),
       ),
