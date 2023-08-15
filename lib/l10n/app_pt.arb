@@ -28,8 +28,18 @@
   "select": "Escolha o que deseja",
   "tryAgain": "Tente novamente",
   "socialMedia": "Qual rede social essas credenciais pertencem?",
-  "appDescription": "Esse é o melhor aplicativo de gerenciamento de senhas que você já viu! Ele utiliza várias ferramentas de segurança para evitar que qualquer outra pessoa acesse suas credenciais sem sua permissão.",
   "aboutApp": "Sobre o aplicativo",
-  "version": "Versão do aplicativo"
-
+  "version": "Versão do aplicativo",
+  "skip": "Pular",
+  "done": "Finalizar",
+  "next": "Próximo",
+  "appIntroduction": "Sua solução definitiva de segurança e armazenamento, garantindo proteção de ponta a ponta para suas informações confidenciais.\n",
+  "appIntroductionTitle": "Apresentando seu guardião de senhas",
+  "appDescription": "Apresentamos o guardião das suas senhas: a sua solução definitiva para segurança e armazenamento, garantindo proteção de ponta a ponta para suas informações confidenciais.",
+  "appBiometry": "Nosso aplicativo combina segurança de senha de última geração com autenticação biométrica, proporcionando uma proteção incomparável para sua tranquilidade digital!",
+  "appBiometryTitle": "Defesa impenetrável ao alcance de suas mãos",
+  "appPasswords": "Além de proteger suas senhas, nosso aplicativo simplifica seu dia com o gerenciamento integrado de credenciais para redes sociais e jogos populares, garantindo diversão e conexões sem preocupação!",
+  "appPasswordsTitle": "Acesse o mundo virtual com nossa poderosa plataforma de segurança",
+  "appSecurity": "Livre de anúncios, com vários idiomas e sem conexão com a internet, sua segurança e privacidade são nossa prioridade máxima, garantindo que suas informações permaneçam confidenciais e sem compartilhamento em qualquer momento!",
+  "appSecurityTitle": "Desfrute da tranquilidade total com nosso aplicativo gratuito"
 }

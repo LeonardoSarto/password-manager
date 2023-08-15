@@ -1,5 +1,4 @@
 {
-  "appName": "Password Manager",
   "password": "Password",
   "name": "Name",
   "login": "Login",
@@ -29,7 +28,20 @@
   "select": "Select what do you want",
   "tryAgain": "Try again",
   "socialMedia": "Select the Social Network",
-  "appDescription": "This is the best password manager app you'll ever see! It utilizes various security tools to prevent anyone else from accessing your credentials without your permission.",
   "aboutApp": "About the app",
-  "version": "Version of app"
+  "version": "Version of app",
+  "skip": "Skip",
+  "done": "Done",
+  "next": "Next",
+  "appName": "Password Keeper",
+  "appDescription": "Password keeper",
+  "appTitle": "Password keeper",
+  "appIntroduction": "Your ultimate security and storage solution, ensuring end-to-end protection for your sensitive information.",
+  "appIntroductionTitle": "Introducing your password keeper",
+  "appBiometry": "Our app combines state-of-the-art password security with biometric authentication, providing unrivaled protection for your digital peace of mind!",
+  "appBiometryTitle": "Impenetrable defense at your fingertips",
+  "appPasswords": "In addition to protecting your passwords, our app simplifies your day with built-in credential management for popular social networks and games, ensuring worry-free fun and connections.",
+  "appPasswordsTitle": "Access the virtual world with our powerful security platform",
+  "appSecurity": "Ads-free, multiple languages and no internet connection, your security and privacy is our top priority, ensuring your information remains confidential and unshared at all times!",
+  "appSecurityTitle": "Enjoy complete peace of mind with our free app"
 }

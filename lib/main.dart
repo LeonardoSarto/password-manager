@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
             themeMode: themeNotifier.isSystem ? ThemeMode.system : themeNotifier.isDark ? ThemeMode.dark : ThemeMode.light,
             theme: LightThemeData().themeData,
             darkTheme: DarkThemeData().themeData,
-            initialRoute: Routes.intro,
+            initialRoute: Routes.splash,
             routes: Routes.list,
           );
         },

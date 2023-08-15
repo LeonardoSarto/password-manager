@@ -7,6 +7,7 @@ import 'package:gerador_senhas/pages/edit_account.dart';
 import 'package:gerador_senhas/pages/home.dart';
 import 'package:gerador_senhas/pages/introduction.dart';
 import 'package:gerador_senhas/pages/settings.dart';
+import 'package:gerador_senhas/pages/splash.dart';
 
 class Routes {
   static Map<String, Widget Function(BuildContext)> list =
@@ -17,8 +18,9 @@ class Routes {
     "/edit_account": (_) => const EditAccount(),
     "/settings": (_) => const Settings(),
     "/change_theme": (_) => const ChangeTheme(),
-    "/about": (_) => About(),
-    "/introduction": (_) => Introduction(),
+    "/about": (_) => const About(),
+    "/introduction": (_) => const Introduction(),
+    "/splash": (_) => const Splash(),
   };
 
   static const String authCheck = "/auth_check";
@@ -36,5 +38,7 @@ class Routes {
   static const String about = "/about";
 
   static const String intro = "/introduction";
+
+  static const String splash = "/splash";
 
 }

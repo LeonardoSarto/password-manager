@@ -144,7 +144,7 @@ class _HomeState extends State<Home> {
                                           : Icons.visibility)),
                                   IconButton(
                                       onPressed: () => ClipboardHelper.copy(
-                                          e.login!, context),
+                                          e.password!, context),
                                       icon: const Icon(Icons.copy)),
                                 ],
                               ),
