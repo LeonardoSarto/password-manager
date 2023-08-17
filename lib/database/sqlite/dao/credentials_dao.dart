@@ -48,8 +48,8 @@ class CredentialsDao extends GenericDao<Credentials, int> {
         throw Exception("Not found");
       }
       Database db = await Connection.create();
-      var sql = 'UPDATE password SET credentials = ?, password = ?, login = ?, updated_in = ? WHERE id = ?';
-      int id = await db.rawUpdate(sql, [data.password, data.login, data.updatedIn, data.id]);
+      var sql = 'UPDATE credentials SET password = ?, login = ?, updated_in = ? WHERE id = ?';
+      int id = await db.rawUpdate(sql, [data.password, data.login, data.updatedIn.toString(), data.id]);
       return id;
     } catch(e) {
       rethrow;

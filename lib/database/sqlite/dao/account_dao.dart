@@ -53,8 +53,8 @@ class AccountDao extends GenericDao<Account, int> {
         throw Exception("Not found");
       }
       Database db = await Connection.create();
-      var sql = 'UPDATE password SET account = ?, name = ?, social_media = ? WHERE id = ?';
-      int id = await db.rawUpdate(sql, [ data.name, data.socialMedia, data.id]);
+      var sql = 'UPDATE account SET name = ?, social_media = ? WHERE id = ?';
+      int id = await db.rawUpdate(sql, [ data.name, data.socialMedia!.name, data.id]);
       return id;
     } catch(e) {
       rethrow;

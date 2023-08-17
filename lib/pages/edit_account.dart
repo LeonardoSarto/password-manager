@@ -25,8 +25,10 @@ class _EditAccountState extends State<EditAccount> {
   List<Credentials> credentialList = [];
   List<FocusNode> focusPasswordList = [FocusNode()];
   late Account account;
+  var created = false;
 
   bool getValueByArguments(BuildContext context) {
+    created = true;
     var argument = ModalRoute.of(context);
     if (argument != null) {
       account = argument.settings.arguments as Account;
@@ -38,7 +40,6 @@ class _EditAccountState extends State<EditAccount> {
 
   fillFields(Account account) {
     name.text = account.name;
-    socialMedia.text = Util.socialMediaList.first.name;
     credentialList = account.credentials;
     for (var element in credentialList) {
       login.add(TextEditingController(text: element.login));
@@ -56,15 +57,16 @@ class _EditAccountState extends State<EditAccount> {
         var registerAccount = AccountDao();
 
         var account = Account(
+          id: this.account.id,
             name: name.value.text,
             socialMedia: SocialMedia(socialMedia.value.text, ""),
             credentials: []);
-        account = await registerAccount.save(account);
+        await registerAccount.update(account);
 
         for (var index = 0; index < credentialList.length; index++) {
           credentialList[index].accountId = account.id;
           credentialList[index].password = password[index].value.text;
-          await registerCredentials.save(credentialList[index]);
+          await registerCredentials.update(credentialList[index]);
         }
         return true;
       }
@@ -88,7 +90,7 @@ class _EditAccountState extends State<EditAccount> {
 
   @override
   Widget build(BuildContext context) {
-    getValueByArguments(context);
+    if (created == false) getValueByArguments(context);
     return Scaffold(
       bottomSheet: SizedBox(
         width: Util.displayWidth(context),
@@ -143,12 +145,12 @@ class _EditAccountState extends State<EditAccount> {
             children: [
               SizedBox(height: Util.displayHeight(context) * 0.04),
               CustomDropdownButton<SocialMedia>(
+                value: account.socialMedia!,
                 labelText: AppLocalizations.of(context)!.socialMedia,
                 onChanged: (SocialMedia? value) {
                   setState(() {
                     if (value != null) {
                       socialMedia.text = value.name;
-                      name.text = value.name;
                     }
                   });
                 },
@@ -158,7 +160,7 @@ class _EditAccountState extends State<EditAccount> {
                           child: Row(
                             children: [
                               Image.network(
-                                "${Util.baseUrl}${e.url}",
+                                Util.baseUrl+e.url,
                               ),
                               Text(e.name),
                             ],

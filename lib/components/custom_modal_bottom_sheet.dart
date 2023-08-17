@@ -23,7 +23,9 @@ class CustomModalBottomSheet extends StatelessWidget {
             leading: Icon(Icons.edit),
             title: Text("Edit"),
           ),
-          onPressed: () => Navigator.pushNamed(context, Routes.editAccount, arguments: account),
+          onPressed: () => Navigator.pushNamed(context, Routes.editAccount,
+                  arguments: account)
+              .then((value) => Navigator.pop(context, true)),
         ),
         MaterialButton(
           child: ListTile(

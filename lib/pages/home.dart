@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
                         scale: 1,
                       ),
                       SizedBox(width: Util.displayWidth(context) * 0.02),
-                      Text(account.socialMedia!.name),
+                      Text(account.name),
                     ],
                   ),
                   subtitle: Text(account.socialMedia!.url),
@@ -100,11 +100,11 @@ class _HomeState extends State<Home> {
                         builder: (context) =>
                             CustomModalBottomSheet(account: account),
                       ).then((value) {
-                        if (value) {
-                          setState(() {
+                        setState(() {
+                          if (value) {
                             _futureAccountList = accountDao.readAll();
-                          });
-                        }
+                          }
+                        });
                       });
                     },
                   ),
@@ -114,44 +114,45 @@ class _HomeState extends State<Home> {
                       shrinkWrap: true,
                       children: account.credentials
                           .map((e) => Card(
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title:
-                              Text(AppLocalizations.of(context)!.login),
-                              subtitle: Text(e.login!),
-                              trailing: IconButton(
-                                  onPressed: () => ClipboardHelper.copy(
-                                      e.login!, context),
-                                  icon: const Icon(Icons.copy)),
-                            ),
-                            ListTile(
-                              title: Text(
-                                  AppLocalizations.of(context)!.password),
-                              subtitle: Text(e.showPassword
-                                  ? e.password!
-                                  : '*' * e.password!.length),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                      onPressed: () => setState(() {
-                                        e.showPassword =
-                                        !e.showPassword;
-                                      }),
-                                      icon: Icon(e.showPassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility)),
-                                  IconButton(
-                                      onPressed: () => ClipboardHelper.copy(
-                                          e.password!, context),
-                                      icon: const Icon(Icons.copy)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ))
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text(
+                                          AppLocalizations.of(context)!.login),
+                                      subtitle: Text(e.login!),
+                                      trailing: IconButton(
+                                          onPressed: () => ClipboardHelper.copy(
+                                              e.login!, context),
+                                          icon: const Icon(Icons.copy)),
+                                    ),
+                                    ListTile(
+                                      title: Text(AppLocalizations.of(context)!
+                                          .password),
+                                      subtitle: Text(e.showPassword
+                                          ? e.password!
+                                          : '*' * e.password!.length),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                              onPressed: () => setState(() {
+                                                    e.showPassword =
+                                                        !e.showPassword;
+                                                  }),
+                                              icon: Icon(e.showPassword
+                                                  ? Icons.visibility_off
+                                                  : Icons.visibility)),
+                                          IconButton(
+                                              onPressed: () =>
+                                                  ClipboardHelper.copy(
+                                                      e.password!, context),
+                                              icon: const Icon(Icons.copy)),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ))
                           .toList(),
                     ),
                   ],
